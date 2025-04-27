@@ -6,7 +6,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("jwt");
-  console.log("Inside api.js, token is = ", token);  // Log the token
+  console.log("Inside api.js, token is =", token); 
 
   if (token) {
     console.log("Adding Authorization header to the request with token.");
@@ -14,13 +14,13 @@ api.interceptors.request.use((config) => {
   } else {
     console.log("No token found in localStorage");
   }
-  
+
   return config;
 }, (error) => {
-  // Log any errors in the request
-  console.error("Request error:", error);
+  console.error("Request error:", error);  
   return Promise.reject(error);
 });
 
-export default api;
 
+
+export default api;
