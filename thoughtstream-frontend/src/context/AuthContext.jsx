@@ -1,37 +1,41 @@
-import React, { createContext, useState, useEffect } from "react";
+// File: src/main.jsx
 
-export const AuthContext = createContext();
+/**
+ * Entry point for the ThoughtStream React frontend
+ * 
+ * - Initializes and mounts the root React component (<App />) into the DOM
+ * - Wraps the app in:
+ *   1. <BrowserRouter> for client-side routing
+ *   2. <AuthProvider> for global authentication context
+ *   3. <React.StrictMode> for highlighting potential problems in development
+ */
 
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
+import ReactDOM from "react-dom/client";           
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";                          
+import { AuthProvider } from "./context/AuthContext";
+import React from "react";
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem("jwt");
-    const storedUser = localStorage.getItem("user");
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
 
-  const login = (jwt, userInfo) => {
-    localStorage.setItem("jwt", jwt);
-    localStorage.setItem("user", JSON.stringify(userInfo));
-    setToken(jwt);
-    setUser(userInfo);
-  };
+// Select the root DOM node from index.html (must match <div id="root">)
+const rootElement = document.getElementById("root");
 
-  const logout = () => {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser(null);
-  };
+// Create a root rendering context (React 18+ API)
+const root = ReactDOM.createRoot(rootElement);
 
-  return (
-    <AuthContext.Provider value={{ token, user, login, logout, isAuthenticated: !!token }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+// Render the application
+root.render(
+  <React.StrictMode>
+    {/* Enables route-based navigation without full page reload */}
+    <BrowserRouter>
+
+      {/* Provides authentication context to the entire component tree */}
+      <AuthProvider>
+
+        {/* Main application component */}
+        <App />
+
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
