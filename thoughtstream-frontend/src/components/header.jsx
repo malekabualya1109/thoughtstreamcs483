@@ -10,12 +10,4 @@ const Header = ({ user, logout }) => {
   );
 };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 export default Header;
-=======
-export default Header;
->>>>>>> f9fc8c5a11c7fd88942cc68ed53e92cfff69ccab
-=======
-export default Header;
->>>>>>> f9fc8c5a11c7fd88942cc68ed53e92cfff69ccab

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "../styles/index.css";
-<<<<<<< HEAD
 import api from "../services/api";
 
-=======
->>>>>>> f9fc8c5a11c7fd88942cc68ed53e92cfff69ccab
 
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
@@ -24,7 +21,6 @@ const DiaryList = () => {
 
   const fetchEntries = async () => {
     try {
-<<<<<<< HEAD
       const token = localStorage.getItem('jwt');
       console.log("Token fetched:", token); // Check token in console
       
@@ -40,15 +36,9 @@ const DiaryList = () => {
       setEntries(res.data);
     } catch (error) {
       console.error("Failed to fetch diary entries", error.response?.data || error.message);
-=======
-      const res = await axios.get('/api/diary');
-      console.log("Fetched Entries:", res.data);
-      setEntries(res.data);
-    } catch (error) {
-      console.error("Failed to fetch diary entries", error);
->>>>>>> f9fc8c5a11c7fd88942cc68ed53e92cfff69ccab
     }
   };
+  
   
 
   const handleChange = (e) => {
@@ -147,7 +137,3 @@ const DiaryList = () => {
 };
 
 export default DiaryList;
-<<<<<<< HEAD
-=======
-
->>>>>>> f9fc8c5a11c7fd88942cc68ed53e92cfff69ccab
