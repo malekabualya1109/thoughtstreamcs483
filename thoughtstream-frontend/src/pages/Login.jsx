@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
+import LoginButton from "../components/LoginButton.jsx"; 
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const Login = () => {
 
     window.google.accounts.id.renderButton(
       document.getElementById("login-button"),
-      { theme: "outline", size: "large" }
+      { theme: "outline", size: "compact" }
     );
   }, []);
 
@@ -36,10 +37,7 @@ const Login = () => {
   
 
   return (
-    <div>
-      <h1>Welcome to ThoughtStream</h1>
-      <div id="login-button"></div>
-    </div>
+    <LoginButton />
   );
 };
 
