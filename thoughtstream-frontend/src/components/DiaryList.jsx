@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import NewEntryForm from '../components/NewEntryForm';
 import "../styles/index.css";
+import api from "../services/api";
+
 
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
@@ -12,6 +14,37 @@ const DiaryList = () => {
   }, []);
 
   const fetchEntries = async () => {
+    try{
+      const token = localStorage.getItem('jwt');
+      console.log("Token fetched:", token); // Check token in console
+      
+      const res = await api.get('/diary', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Fetched Entries:", res.data);
+      if(res.data.length === 0){
+        console.log("no enteries found")
+      }
+      setEntries(res.data);
+    } catch (error) {
+      console.error("Failed to fetch diary entries", error.response?.data || error.message);
+    }
+  };
+  
+  
+
+  const handleChange = (e) => {
+    setFormData({ 
+      ...formData, 
+      [e.target.name]: e.target.value 
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('/api/diary', {
@@ -61,4 +94,3 @@ const DiaryList = () => {
 };
 
 export default DiaryList;
-
