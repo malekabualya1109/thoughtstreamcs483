@@ -20,11 +20,13 @@ const DiaryList = () => {
   const fetchEntries = async () => {
     try {
       const res = await axios.get('/api/diary');
+      console.log("Fetched Entries:", res.data);
       setEntries(res.data);
     } catch (error) {
       console.error("Failed to fetch diary entries", error);
     }
   };
+  
 
   const handleChange = (e) => {
     setFormData({ 
@@ -48,31 +50,31 @@ const DiaryList = () => {
   
       setShowModal(false);
       setFormData({ title: '', content: '', reflection: '', tags: '', location: '' });
-      fetchEntries(); // refresh entries
+      fetchEntries();
     } catch (error) {
       console.error("Failed to create diary entry", error.response?.data || error.message);
     }
   };
-  
 
   return (
     <div className="diaryEntryList">
       <button onClick={() => setShowModal(true)} className="newEntryButton">
         + New Diary Entry
       </button>
-
-      {entries.length > 0 ? (
-        entries.map(entry => (
-          <div key={entry._id} className="diaryEntryCard">
-            <h3>{entry.title}</h3>
-            <p>{entry.content}</p>
-          </div>
-        ))
-      ) : (
-        <p>No diary entries yet!</p>
-      )}
-
-      {/* Modal Popup */}
+      <div className="entryListContainer">
+  {entries.length > 0 ? (
+    entries.map(entry => {
+      console.log("Entry:", entry); 
+      return (
+        <div key={entry._id} className="diaryEntryCard">
+          <h3>{entry.title}</h3>
+        </div>
+      );
+    })
+  ) : (
+    <p>No diary entries yet!</p>
+  )}
+</div>
       {showModal && (
         <div className="modalOverlay">
           <div className="modalContent">
