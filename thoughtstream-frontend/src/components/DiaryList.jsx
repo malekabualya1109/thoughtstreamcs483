@@ -39,7 +39,6 @@ const DiaryList = () => {
     }
   };
   
-  
 
   const handleChange = (e) => {
     setFormData({ 
