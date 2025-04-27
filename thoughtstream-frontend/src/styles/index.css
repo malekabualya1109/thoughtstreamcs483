@@ -64,18 +64,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 120%;  /* Take full width of the parent */
-    height: 80%;/* Take full height of the parent */
-    margin: 0 auto; /* Center it horizontally */
-    max-width: 20rem;  /* Limit max-width *//* Add a small gap at the top and bottom (adjust as needed) */
+    width: 120%; 
+    height: 80%;
+    margin: 0 auto;
+    max-width: 20rem;
     margin-top: 2.5rem;
 }
 
   
   .flower-animation-container > div {
-    width: 25rem; /* Increase the width to make the animation wider */
-    height: 20rem; /* Decrease the height to maintain aspect ratio while adding a gap */
-    object-fit: contain; /* Maintain aspect ratio and fit within container */
+    width: 25rem;
+    height: 20rem; 
+    object-fit: contain; 
     max-width: 100%;
     max-height: 100%;
   }
@@ -86,8 +86,8 @@
 .innerDash {
     margin-top: 3rem; 
     display: grid;
-    grid-template-rows: 3.5fr 10fr; /* 3 rows */
-    grid-template-columns: 1fr 2fr .7fr; /* 3 columns */
+    grid-template-rows: 3.5fr fr; 
+    grid-template-columns: 1fr 2fr .7fr; 
     grid-template-areas:
       "section1 section2 section3"
       "section4 section2 section3";
@@ -99,16 +99,19 @@
 .innerDash > .section1 {
     margin-left: 1rem;
     grid-area: section1;
-    background: rgba(255, 255, 255, 0.6); /* Faint white background */
-    padding: 4rem;
-    height: 100%; /* Ensure it occupies space */
+    background: rgba(255, 255, 255, 0.6);
+    padding: 0rem;
+    height: 17rem; 
     border-radius: .7rem; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
   }
   
  /* Section 2 */
 .innerDash > .section2 {
     grid-area: section2;
-    background: rgba(255, 255, 255, 0.6); /* Faint white background */
+    background: rgba(255, 255, 255, 0.6); 
     border-radius: .7rem; 
   }
   
@@ -117,40 +120,35 @@
   .innerDash > .section3 {
     margin-right: 1rem;
     grid-area: section3;
-    background: rgba(255, 255, 255, 0.6); /* Faint white background */
-    height: 100%; /* Ensure it occupies space */
+    background: rgba(255, 255, 255, 0.6);
+    height: 100%; 
     border-radius: .7rem; 
   }
   
   /* Section 4 */
   .innerDash > .section4 {
     margin-left: 1rem;
-    margin-top: 8rem; 
     grid-area: section4;
-    background: rgba(255, 255, 255, 0.6); /* Faint white background */
-    height: 20rem; /* Ensure it occupies space */
+    background: rgba(255, 255, 255, 0.6);
+    height: 22rem; 
     border-radius: .7rem; 
   }
   
-
-
-
-
   .diaryEntryList {
-    padding: 20px;
+    padding: 1rem;
   }
   
   .entryListContainer {
-    max-height: 400px;  /* Adjust as needed */
-    overflow-y: auto;   /* Enables vertical scrolling */
+    max-height: 66vh;   
+    overflow-y: auto;     
     margin-top: 20px;
-    border: 1px solid #ccc; /* Optional: adds a border around the list */
+    border: 1px solid #ccc;
     padding: 10px;
   }
   
   .diaryEntryCard {
     margin-bottom: 10px;
-    padding: 10px;
+    padding: .4rem;
     background-color: #f9f9f9;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -168,4 +166,144 @@
     background-color: #45a049;
   }
   
+  .WeatherWidget{
+    margin-top: 0; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%; 
+  }
 
+  /*WEATHER WIDGET*/
+  .WeatherWidget > .blank{
+    display: flex; 
+    justify-content: center;
+    color: #45a049;
+    font-size: 1.3rem; 
+    margin-top: 0rem;
+    background-color: white;
+    padding: .4rem;
+    width: 23rem; 
+    border-top-left-radius: .7rem;
+    border-top-right-radius: .7rem;  
+  }
+
+  #login-button {
+    width: auto;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  #login-button:hover{
+    background-color: rgb(89, 89, 151) !important;
+  }
+
+  .thoughtStream {
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 5rem;
+    padding-top: 5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(112, 156, 192, 0.8); 
+    width: 25rem;
+    height: 20rem;
+    border-radius: 1rem;
+  }
+
+.thoughtStream > h2{
+  margin-top: .7rem;
+  margin-bottom: 0;  
+  display: flex; 
+  justify-content: center;
+  font-family: 'Pacifico', cursive;
+  font-size: 2.6rem; 
+  color: white; 
+}
+
+.thoughtStream > h3{
+  margin-top: 0rem;
+  display: flex; 
+  justify-content: center;
+  font-family: 'Pacifico', cursive;
+  font-size: 2.6rem; 
+  color: white; 
+}
+
+.sun{
+  font-size: 3.5rem;
+  color: rgba(237, 246, 117, 0.7);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;           
+}
+
+/* centered white box */
+.modalContent {
+  background: rgb(183, 208, 217);
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.newEntryForm{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+}
+
+.form{
+  display:flex;
+  align-items: left;
+  justify-content: left;
+  flex-direction: column; 
+  gap: 0.3rem; 
+}
+
+.form > .titleOfForm {
+  width: 28rem;
+  height: 2rem; 
+  border-radius: .4rem;
+  border: none;
+}
+
+.form > .formContent {
+  height: 12rem;
+  border-radius: .4rem;
+  border: none;
+}
+
+.form > .formReflection{
+  height: 3.5rem; 
+  border-radius: .4rem;
+  border: none;
+}
+
+.form > .tagForm {
+  height: 2rem;
+  border-radius: .4rem;
+  border: none;
+}
+
+.form > .locationForm{
+  height: 2rem;
+  border-radius: .4rem;
+  border: none;
+}

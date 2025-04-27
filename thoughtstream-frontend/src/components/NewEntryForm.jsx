@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import "../styles/index.css";
 
-const NewEntryForm= () => {
-  const [entries, setEntries] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -12,19 +10,6 @@ const NewEntryForm= () => {
     tags: '',
     location: '',
   });
-
-  useEffect(() => {
-    fetchEntries();
-  }, []);
-
-  const fetchEntries = async () => {
-    try {
-      const res = await axios.get('/api/diary');
-      setEntries(res.data);
-    } catch (error) {
-      console.error("Failed to fetch diary entries", error);
-    }
-  };
 
   const handleChange = (e) => {
     setFormData({ 
@@ -35,89 +20,69 @@ const NewEntryForm= () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const token = localStorage.getItem('token');
-  
       await axios.post('/api/diary', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
       });
-  
-      setShowModal(false);
+
       setFormData({ title: '', content: '', reflection: '', tags: '', location: '' });
-      fetchEntries(); // refresh entries
+      onEntryCreated();
     } catch (error) {
       console.error("Failed to create diary entry", error.response?.data || error.message);
     }
   };
-  
 
   return (
-    <div className="diaryEntryList">
-      <button onClick={() => setShowModal(true)} className="newEntryButton">
-        + New Diary Entry
-      </button>
-
-      {entries.length > 0 ? (
-        entries.map(entry => (
-          <div key={entry._id} className="diaryEntryCard">
-            <h3>{entry.title}</h3>
-            <p>{entry.content}</p>
-          </div>
-        ))
-      ) : (
-        <p>No diary entries yet!</p>
-      )}
-
-      {/* Modal Popup */}
-      {showModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>New Diary Entry</h2>
-            <form onSubmit={handleSubmit}>
-              <input
-                name="title"
-                placeholder="Title"
-                value={formData.title}
-                onChange={handleChange}
-                required
-              />
-              <textarea
-                name="content"
-                placeholder="Content"
-                value={formData.content}
-                onChange={handleChange}
-                required
-              />
-              <textarea
-                name="reflection"
-                placeholder="Reflection (Optional)"
-                value={formData.reflection}
-                onChange={handleChange}
-              />
-              <input
-                name="tags"
-                placeholder="Tags (comma separated)"
-                value={formData.tags}
-                onChange={handleChange}
-              />
-              <input
-                name="location"
-                placeholder="Location"
-                value={formData.location}
-                onChange={handleChange}
-                required
-              />
-              <button type="submit">Create Entry</button>
-              <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
-            </form>
-          </div>
-        </div>
-      )}
+    <div className="newEntryForm">
+      <h2>New Diary Entry</h2>
+      <form className="form" onSubmit={handleSubmit}>
+        <input
+          className="titleOfForm"
+          name="title"
+          placeholder="Title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          className="formContent"
+          name="content"
+          placeholder="Content"
+          value={formData.content}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          className="formReflection"
+          name="reflection"
+          placeholder="Reflection (Optional)"
+          value={formData.reflection}
+          onChange={handleChange}
+        />
+        <input
+          className="tagForm"
+          name="tags"
+          placeholder="Tags (comma separated)"
+          value={formData.tags}
+          onChange={handleChange}
+        />
+        <input
+          className="locationForm"
+          name="location"
+          placeholder="Location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
+      </form>
+        <button type="submit">Create Entry</button>
+        <button type="button" onClick={onCancel}>Cancel</button>
     </div>
   );
 };
 
-export default NewEntryForm;
+export default CreateNewDiaryEntry;
