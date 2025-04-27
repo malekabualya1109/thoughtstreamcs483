@@ -25,10 +25,15 @@ const Login = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.token) {
+          // Store the JWT token in localStorage for later use
+          localStorage.setItem('token', data.token);
+          // Call the login function from AuthContext to update your app state
           login(data.token, data.user);
         }
-      });
+      })
+      .catch((error) => console.error('Error during authentication:', error));
   };
+  
 
   return (
     <div>
