@@ -16,7 +16,7 @@ const DiaryList = () => {
   const fetchEntries = async () => {
     try{
       const token = localStorage.getItem('jwt');
-      console.log("Token fetched:", token); // Check token in console
+      console.log("Token fetched:", token); 
       
       const res = await api.get('/diary', {
         headers: {

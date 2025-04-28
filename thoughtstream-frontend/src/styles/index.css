@@ -147,45 +147,93 @@
   }
   
   .diaryEntryCard {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .8rem;
     margin-bottom: 10px;
-    padding: .4rem;
+    padding: .2rem;
     background-color: #f9f9f9;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
   
+  /*New Diary Entry button*/
   .newEntryButton {
+    font-family: 'Comic Neue', cursive;
+    font-size: 1rem;
+    margin-left: 1.9rem;
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
+    border-radius: .5rem;
     cursor: pointer;
   }
   
-  .newEntryButton:hover {
-    background-color: #45a049;
+  /*Create Entry Submit Button*/
+  .submitButton{
+    font-family: 'Comic Neue', cursive;
+    margin-top: 1rem;
+    width: 10rem;
+    border: none; 
+    border-radius: .5rem;
+    padding: .7rem;
+    background-color: rgb(119, 156, 169);
+    color: white; 
+    font-size: 1rem;
+  }
+
+  /*Cancel Button*/
+  .cancelButton{
+    font-family: 'Comic Neue', cursive;
+    margin-top: 1rem;
+    width: 10rem;
+    border: none; 
+    border-radius: .5rem;
+    padding: 1rem;
+    background-color: rgb(119, 156, 169);
+    color: white; 
+    font-size: 1rem;
+  }
+
+  .cancelButton:hover, .submitButton:hover{
+    background-color: rgb(197, 255, 197);
+    color: rgb(1, 86, 1); 
   }
   
+  .newEntryForm > h2{
+    font-family: 'Pacifico', cursive;
+    margin-top: 0; 
+    font-size: 2.3rem; 
+    color:  rgb(119, 156, 169); 
+  }
+
+  .newEntryButton:hover {
+    background-color: #37853b;
+  }
+
+  .column{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column; 
+    gap: .3rem; 
+  }
+  
+  .vertical{
+    display: flex;
+    flex-direction: vertical;
+    justify-content: center;
+    gap: 1rem;
+  }
+
   .WeatherWidget{
     margin-top: 0; 
     display: flex;
     justify-content: center;
     align-items: flex-start;
     height: 100%; 
-  }
-
-  /*WEATHER WIDGET*/
-  .WeatherWidget > .blank{
-    display: flex; 
-    justify-content: center;
-    color: #45a049;
-    font-size: 1.3rem; 
-    margin-top: 0rem;
-    background-color: white;
-    padding: .4rem;
-    width: 23rem; 
-    border-top-left-radius: .7rem;
-    border-top-right-radius: .7rem;  
   }
 
   #login-button {
@@ -195,7 +243,7 @@
   }
 
   #login-button:hover{
-    background-color: rgb(89, 89, 151) !important;
+    background-color: rgb(89, 89, 151);
   }
 
   .thoughtStream {
@@ -269,41 +317,88 @@
   flex-direction: column; 
 }
 
-.form{
-  display:flex;
-  align-items: left;
-  justify-content: left;
-  flex-direction: column; 
-  gap: 0.3rem; 
-}
 
-.form > .titleOfForm {
+.form > .column > .titleOfForm {
   width: 28rem;
   height: 2rem; 
   border-radius: .4rem;
   border: none;
 }
 
-.form > .formContent {
+.form > .column > .formContent {
   height: 12rem;
+  width: 28rem;
   border-radius: .4rem;
   border: none;
 }
 
-.form > .formReflection{
+.form > .column > .formReflection{
   height: 3.5rem; 
+  width: 28rem;
   border-radius: .4rem;
   border: none;
 }
 
-.form > .tagForm {
+.form > .column > .tagForm {
   height: 2rem;
+  width: 28rem;
   border-radius: .4rem;
   border: none;
 }
 
-.form > .locationForm{
+.form > .column > .locationForm{
   height: 2rem;
+  width: 28rem;
   border-radius: .4rem;
   border: none;
+}
+
+.WeatherWidget{
+  display: flex;
+  align-items: center;
+  flex-direction:column; 
+}
+
+.WeatherWidget > h3{
+  margin-top: .1rem;
+  background-color: white;
+  padding: .7rem;
+  border-radius: 1rem; 
+}
+
+.WeatherWidget > h3:hover{
+  background-color: rgb(151, 192, 206); 
+  color: white; 
+}
+
+.WeatherWidget > .temp {
+  display: flex; 
+  justify-content: center;
+  margin: 0;
+  background-color: rgb(197, 255, 197);
+  padding: 1.4rem;
+  font-size: 2rem;
+  border-radius: 1rem;
+  width: 8.8rem; 
+}
+
+.WeatherWidget > .temp:hover{
+  background-color: #45a049;
+  color: white; 
+}
+
+.WeatherWidget > .condition {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0; 
+  background-color: white;
+  padding: .7rem;
+  border-radius: 1rem; 
+  width: 10.3rem;
+}
+
+.WeatherWidget > .condition:hover{
+ background-color: rgb(151, 192, 206); 
+ color: white; 
 }

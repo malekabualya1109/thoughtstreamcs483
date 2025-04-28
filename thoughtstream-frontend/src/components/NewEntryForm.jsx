@@ -11,6 +11,7 @@ const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
     location: '',
   });
 
+    
   const handleChange = (e) => {
     setFormData({ 
       ...formData, 
@@ -40,6 +41,7 @@ const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
     <div className="newEntryForm">
       <h2>New Diary Entry</h2>
       <form className="form" onSubmit={handleSubmit}>
+        <div className="column">
         <input
           className="titleOfForm"
           name="title"
@@ -78,9 +80,12 @@ const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
           onChange={handleChange}
           required
         />
+        </div>
+        <div className="vertical">
+        <button className="submitButton" type="submit">Create Entry</button>
+        <button className="cancelButton" type="button" onClick={onCancel}>Cancel</button>
+        </div>
       </form>
-        <button type="submit">Create Entry</button>
-        <button type="button" onClick={onCancel}>Cancel</button>
     </div>
   );
 };
