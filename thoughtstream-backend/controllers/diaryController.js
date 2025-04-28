@@ -9,25 +9,17 @@ import { fetchWeather } from "./weatherController.js";
  */
 export const getAllEntries = async (req, res) => {
   try {
-    const { search, tag, location } = req.query;
-    let filter = { user: req.user._id }; // 🔒 Restrict to logged-in user's entries
+    // Only filter by user ID
+    let filter = { user: req.user._id }; 
 
-    if (search) {
-      filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { content: { $regex: search, $options: "i" } },
-      ];
-    }
-
-    if (tag) filter.tags = tag;
-    if (location) filter.location = location;
-
-    const entries = await DiaryEntry.find(filter).sort({ createdAt: -1 });
+    // Fetch all entries without additional filters
+    const entries = await DiaryEntry.find(filter).sort({createdAt: -1});
     res.status(200).json(entries);
   } catch (error) {
     res.status(500).json({ message: "Server Error: Unable to fetch diary entries" });
   }
 };
+
 
 /**
  * @route   GET /api/diary/:id
