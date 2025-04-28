@@ -3,10 +3,12 @@ import axios from 'axios';
 import NewEntryForm from '../components/NewEntryForm';
 import "../styles/index.css";
 import api from "../services/api";
+import DiaryEntryCard from './DiaryEntryCard'
 
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState(null);
 
   useEffect(() => {
     fetchEntries();
@@ -32,7 +34,13 @@ const DiaryList = () => {
     }
   };
   
-  
+  const handleEntryClick = (entry) => {
+    setSelectedEntry(entry);
+  }
+
+  const closeDetailsModal = () => {
+    setSelectedEntry(null);
+  };
 
   const handleChange = (e) => {
     setFormData({ 
@@ -72,7 +80,11 @@ const DiaryList = () => {
       <div className="entryListContainer">
         {entries.length > 0 ? (
           entries.map(entry => (
-            <div key={entry._id} className="diaryEntryCard">
+            <div
+              key={entry._id}
+              className="diaryEntryCard"
+              onClick={() => handleEntryClick(entry)}
+            >
               <h3>{entry.title}</h3>
             </div>
           ))
@@ -88,7 +100,17 @@ const DiaryList = () => {
           </div>
         </div>
       )}
+      {selectedEntry && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>{selectedEntry.title}</h2>
+            <p>{selectedEntry.content}</p>
+            <button onClick={closeDetailsModal}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 };
 
