@@ -3,10 +3,6 @@ import axios from 'axios';
 import NewEntryForm from '../components/NewEntryForm';
 import "../styles/index.css";
 import api from "../services/api";
-<<<<<<< HEAD
-=======
-
->>>>>>> 8a6fecd6e91dd805f787c8eb111ca09a2ad2db6c
 
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
