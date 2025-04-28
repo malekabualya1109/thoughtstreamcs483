@@ -5,7 +5,7 @@ import "../styles/index.css"
 const DiaryEntryCard = () => {
   return (
     <div className="diaryEntryCard">
-        <p>hi</p>
+        <p>Today's going to be a wonderful day</p>
     </div>
   );
 };
