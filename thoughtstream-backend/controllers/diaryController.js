@@ -10,7 +10,7 @@ import { fetchWeather } from "./weatherController.js";
 export const getAllEntries = async (req, res) => {
   try {
     // Only filter by user ID
-    let filter = { user: req.user._id }; 
+    let filter = { user: req.user.userId }; 
 
     // Fetch all entries without additional filters
     const entries = await DiaryEntry.find(filter).sort({createdAt: -1});
@@ -140,7 +140,7 @@ export const deleteEntry = async (req, res) => {
     }
 
     // Ownership check
-    if (entry.user.toString() !== req.user._id.toString()) {
+    if (entry.user.toString() !== req.user.userId.toString()) {
       return res.status(403).json({ message: "Forbidden" });
     }
 

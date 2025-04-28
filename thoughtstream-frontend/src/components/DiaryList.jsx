@@ -4,7 +4,6 @@ import NewEntryForm from '../components/NewEntryForm';
 import "../styles/index.css";
 import api from "../services/api";
 
-
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
   const [showModal, setShowModal] = useState(false);
