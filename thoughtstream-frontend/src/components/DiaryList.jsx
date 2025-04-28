@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import "../styles/index.css";
+import api from "../services/api";
 
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);

@@ -5,6 +5,8 @@ import WeatherWidget from "../components/WeatherWidget.jsx";
 import FlowerAnimation from "../components/FlowersAnimation.jsx"; 
 import DiaryEntryCard from "../components/DiaryEntryCard";
 import DiaryList from "../components/DiaryList"; 
+import api from "../services/api";
+
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
