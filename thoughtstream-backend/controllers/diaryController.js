@@ -107,7 +107,7 @@ export const updateEntry = async (req, res) => {
     }
 
     // 🔒 Ownership check
-    if (entry.user.toString() !== req.user._id.toString()) {
+    if (entry.user.toString() !== req.user.userId.toString()) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
