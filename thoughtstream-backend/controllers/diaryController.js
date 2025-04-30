@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import DiaryEntry from "../models/DiaryEntry.js";
 import { fetchWeather } from "./weatherController.js";
+import { validateDiaryEntry } from "../middleware/validation.js";
+
+
 
 /**
  * @route   GET /api/diary
@@ -60,14 +63,16 @@ export const createEntry = async (req, res) => {
   try {
     const { title, content, reflection, tags, location } = req.body;
 
-    if (!title || !content || !location) {
-      return res.status(400).json({ message: "Title, content, and location are required." });
+    // Validate input
+    const { isValid, errors } = validateDiaryEntry(req.body);
+    if (!isValid) {
+      return res.status(400).json({ message: "Validation failed", errors });
     }
 
     const weatherData = location ? await fetchWeather(location) : null;
 
     const newEntry = new DiaryEntry({
-      user: req.user.userId,  // Matches token and middleware
+      user: req.user.userId,
       title,
       content,
       reflection,
