@@ -17,10 +17,6 @@ export const validateDiaryEntry = (data) => {
       errors.push("Content must be at least 10 characters long.");
     }
   
-    // Location: optional, only letters/spaces
-    if (data.location && !/^[A-Za-z\s]+$/.test(data.location)) {
-      errors.push("Location must contain only letters and spaces.");
-    }
   
     // Tags: optional, must be array of strings, max 10 tags
     if (data.tags) {
