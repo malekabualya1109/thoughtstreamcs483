@@ -10,6 +10,14 @@ const DiaryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [showAllEntriesModal, setShowAllEntriesModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    content: "",
+    reflection: "",
+    tags: "",
+    location: "",
+  });
 
   useEffect(() => {
     fetchEntries();
@@ -34,6 +42,27 @@ const DiaryList = () => {
       console.error("Failed to fetch diary entries", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    if (editingEntry) {
+      setEditFormData({
+        title: editingEntry.title,
+        content: editingEntry.content,
+        reflection: editingEntry.reflection,
+        tags: editingEntry.tags?.join(", ") || "",
+        location: editingEntry.location || ""
+      });
+    }
+  }, [editingEntry]);
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  
   
   const handleEntryClick = (entry) => {
     setSelectedEntry(entry);
@@ -75,6 +104,71 @@ const DiaryList = () => {
     }
   };
 
+  const handleEditSubmit = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+  
+      if (!editingEntry) {
+        throw new Error("No entry selected for editing");
+      }
+  
+      // Log the current editingEntry to make sure it's correct
+      console.log("Currently editing entry:", editingEntry);
+  
+      // Prepare the updated entry data
+      const updatedEntry = {
+        ...editFormData,
+        tags: editFormData.tags ? editFormData.tags.split(",").map((tag) => tag.trim()) : [], // Make sure tags is an array
+      };
+  
+      // Log the data you're sending to the server
+      console.log("Updated entry data to be sent:", updatedEntry);
+  
+      // Check if any required fields are missing or invalid
+      if (!updatedEntry.title || !updatedEntry.content) {
+        throw new Error("Title and Content are required fields.");
+      }
+  
+      // Send the PUT request to the backend
+      const response = await api.put(`/diary/${editingEntry._id}`, updatedEntry, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      // Log the response data from the API
+      console.log("Response from server after update:", response.data);
+  
+      // Update the local state with the response from the server
+      setEntries((prevEntries) =>
+        prevEntries.map((entry) =>
+          entry._id === editingEntry._id ? response.data : entry
+        )
+      );
+  
+      // Close the edit modal
+      setEditingEntry(null);
+      console.log("Entry updated successfully:", response.data);
+    } catch (error) {
+      // Log the detailed error information
+      console.error("Failed to update the entry:", error);
+  
+      // Check if error response contains additional information
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unknown error occurred";
+  
+      // Display a more descriptive error message
+      alert(`Failed to update the entry: ${errorMessage}`);
+    }
+  };
+  
+  
+ 
+
   const handleEntryCreated = () => {
     fetchEntries();
     setShowModal(false);
@@ -98,6 +192,11 @@ const DiaryList = () => {
       alert("Failed to delete entry.");
       console.error("Delete error:", error.response?.data || error.message);
     }
+  };
+
+  const handleEditEntry = (entry) => {
+    setEditingEntry(entry); // Trigger edit modal directly
+    setSelectedEntry(null); // Close detail view if it's open
   };
 
   return (
@@ -162,6 +261,7 @@ const DiaryList = () => {
           </div>
         </div>
       )}
+
       {selectedEntry && (
         <div className="modalOverlay">
           <div className="modalContent">
