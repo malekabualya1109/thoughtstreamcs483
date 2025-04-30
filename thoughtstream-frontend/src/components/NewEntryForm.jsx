@@ -21,7 +21,7 @@ const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const token = localStorage.getItem('token');
       await axios.post('/api/diary', formData, {
@@ -29,13 +29,22 @@ const CreateNewDiaryEntry = ({ onEntryCreated, onCancel }) => {
           Authorization: `Bearer ${token}`,
         }
       });
-
+  
       setFormData({ title: '', content: '', reflection: '', tags: '', location: '' });
       onEntryCreated();
     } catch (error) {
+      if (error.response?.status === 400 && Array.isArray(error.response.data.errors)) {
+        alert("Validation Errors:\n" + error.response.data.errors.join("\n"));
+      } else if (error.response?.data?.message) {
+        alert("Error: " + error.response.data.message);
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+  
       console.error("Failed to create diary entry", error.response?.data || error.message);
     }
   };
+  
 
   return (
     <div className="newEntryForm">
