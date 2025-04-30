@@ -24,10 +24,10 @@ const DiaryList = () => {
   }, []);
 
   const fetchEntries = async () => {
-    try {
+    try{
       const token = localStorage.getItem('jwt');
       console.log("Token fetched:", token); 
-
+      
       const res = await api.get('/diary', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,6 +80,7 @@ const DiaryList = () => {
     setShowAllEntriesModal(false);
   };
 
+
   const handleChange = (e) => {
     setFormData({ 
       ...formData, 
@@ -89,7 +90,7 @@ const DiaryList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('/api/diary', {
@@ -101,6 +102,25 @@ const DiaryList = () => {
       setEntries(res.data);
     } catch (error) {
       console.error("Failed to fetch diary entries", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this diary entry?");
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem('jwt');
+      await api.delete(`/diary/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      fetchEntries();
+      setSelectedEntry(null);
+    } catch (error) {
+      alert("Failed to delete entry.");
+      console.error("Delete error:", error.response?.data || error.message);
     }
   };
 
@@ -174,26 +194,6 @@ const DiaryList = () => {
     setShowModal(false);
   };
 
-  // NEW: Delete handler
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this diary entry?");
-    if (!confirmDelete) return;
-
-    try {
-      const token = localStorage.getItem('jwt');
-      await api.delete(`/diary/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-      fetchEntries();
-      setSelectedEntry(null);
-    } catch (error) {
-      alert("Failed to delete entry.");
-      console.error("Delete error:", error.response?.data || error.message);
-    }
-  };
-
   const handleEditEntry = (entry) => {
     setEditingEntry(entry); // Trigger edit modal directly
     setSelectedEntry(null); // Close detail view if it's open
@@ -225,8 +225,10 @@ const DiaryList = () => {
         )}
       </div>
 
-      {/* Modal to show all entries' content */}
-      {showAllEntriesModal && (
+      
+
+{/* Modal to show all entries' content */}
+{showAllEntriesModal && (
         <div className="modalOverlay">
           <div className="modalContent">
             <h2>All Diary Entries</h2>
@@ -240,7 +242,9 @@ const DiaryList = () => {
                 <p><strong>Weather:</strong> 
                   {entry.weather ? (
                     <>
-                      {entry.weather.condition}, {entry.weather.temperature} in {entry.weather.location}
+                      <span>{entry.weather.condition}</span>, 
+                      <span>{entry.weather.temperature}</span> 
+                      in <span>{entry.weather.location}</span>
                     </>
                   ) : (
                     "Weather data unavailable."
@@ -250,6 +254,61 @@ const DiaryList = () => {
               </div>
             ))}
             <button onClick={closeAllEntriesModal}>Close</button>
+          </div>
+        </div>
+      )}
+
+{editingEntry && (
+        <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Entry</h2>
+            <form>
+              <label>
+                Title:
+                <input
+                  type="text"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                Content:
+                <textarea
+                  name="content"
+                  value={editFormData.content}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <label>
+                Reflection:
+                <textarea
+                  name="reflection"
+                  value={editFormData.reflection}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <label>
+                Tags (comma-separated):
+                <input
+                  type="text"
+                  name="tags"
+                  value={editFormData.tags}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                Location:
+                <input
+                  type="text"
+                  name="location"
+                  value={editFormData.location}
+                  onChange={handleEditChange}
+                />
+              </label>
+            </form>
+            <button onClick={() => setEditingEntry(null)}>Cancel</button>
+            <button onClick={handleEditSubmit}>Save Changes</button>
           </div>
         </div>
       )}
@@ -265,27 +324,29 @@ const DiaryList = () => {
       {selectedEntry && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <h2>{selectedEntry.title}</h2>
-            <p><strong>Content:</strong> {selectedEntry.content}</p>
-            <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
-            <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
-            <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
-            <p><strong>Weather:</strong>{" "} 
-              {selectedEntry.weather ? (
-                <>
-                  {selectedEntry.weather.condition}, {selectedEntry.weather.temperature} in {selectedEntry.weather.location}
-                </>
-              ) : (
-                "Weather data unavailable."
-              )}
-            </p>
-            {/* NEW Delete Button */}
-            <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
-            <button onClick={closeDetailsModal}>Close</button>
-          </div>
-        </div>
+          <h2>{selectedEntry.title}</h2>
+      <p><strong>Content:</strong> {selectedEntry.content}</p>
+      <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
+      <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
+      <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
+      <p><strong>Weather:</strong> 
+  {selectedEntry.weather ? (
+    <>
+      <span>{selectedEntry.weather.condition}</span>, 
+      <span>{selectedEntry.weather.temperature}</span> 
+      in <span>{selectedEntry.weather.location}</span>
+    </>
+  ) : (
+    "Weather data unavailable."
+  )}</p>
+      <button onClick={closeDetailsModal}>Close</button>
+      <button onClick={() => setEditingEntry(selectedEntry)}>Edit</button> {/* Edit Button */}
+      <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
+      </div>
+    </div>
       )}
     </div>
+
   );
 };
 
