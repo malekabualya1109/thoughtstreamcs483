@@ -10,16 +10,24 @@ const DiaryList = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [showAllEntriesModal, setShowAllEntriesModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    content: "",
+    reflection: "",
+    tags: "",
+    location: "",
+  });
 
   useEffect(() => {
     fetchEntries();
   }, []);
 
   const fetchEntries = async () => {
-    try {
+    try{
       const token = localStorage.getItem('jwt');
       console.log("Token fetched:", token); 
-
+      
       const res = await api.get('/diary', {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,6 +42,27 @@ const DiaryList = () => {
       console.error("Failed to fetch diary entries", error.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    if (editingEntry) {
+      setEditFormData({
+        title: editingEntry.title,
+        content: editingEntry.content,
+        reflection: editingEntry.reflection,
+        tags: editingEntry.tags?.join(", ") || "",
+        location: editingEntry.location || ""
+      });
+    }
+  }, [editingEntry]);
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  
   
   const handleEntryClick = (entry) => {
     setSelectedEntry(entry);
@@ -51,6 +80,7 @@ const DiaryList = () => {
     setShowAllEntriesModal(false);
   };
 
+
   const handleChange = (e) => {
     setFormData({ 
       ...formData, 
@@ -60,7 +90,7 @@ const DiaryList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('/api/diary', {
@@ -75,12 +105,6 @@ const DiaryList = () => {
     }
   };
 
-  const handleEntryCreated = () => {
-    fetchEntries();
-    setShowModal(false);
-  };
-
-  // NEW: Delete handler
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this diary entry?");
     if (!confirmDelete) return;
@@ -98,6 +122,81 @@ const DiaryList = () => {
       alert("Failed to delete entry.");
       console.error("Delete error:", error.response?.data || error.message);
     }
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+  
+      if (!editingEntry) {
+        throw new Error("No entry selected for editing");
+      }
+  
+      // Log the current editingEntry to make sure it's correct
+      console.log("Currently editing entry:", editingEntry);
+  
+      // Prepare the updated entry data
+      const updatedEntry = {
+        ...editFormData,
+        tags: editFormData.tags ? editFormData.tags.split(",").map((tag) => tag.trim()) : [], // Make sure tags is an array
+      };
+  
+      // Log the data you're sending to the server
+      console.log("Updated entry data to be sent:", updatedEntry);
+  
+      // Check if any required fields are missing or invalid
+      if (!updatedEntry.title || !updatedEntry.content) {
+        throw new Error("Title and Content are required fields.");
+      }
+  
+      // Send the PUT request to the backend
+      const response = await api.put(`/diary/${editingEntry._id}`, updatedEntry, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      // Log the response data from the API
+      console.log("Response from server after update:", response.data);
+  
+      // Update the local state with the response from the server
+      setEntries((prevEntries) =>
+        prevEntries.map((entry) =>
+          entry._id === editingEntry._id ? response.data : entry
+        )
+      );
+  
+      // Close the edit modal
+      setEditingEntry(null);
+      console.log("Entry updated successfully:", response.data);
+    } catch (error) {
+      // Log the detailed error information
+      console.error("Failed to update the entry:", error);
+  
+      // Check if error response contains additional information
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unknown error occurred";
+  
+      // Display a more descriptive error message
+      alert(`Failed to update the entry: ${errorMessage}`);
+    }
+  };
+  
+  
+ 
+
+  const handleEntryCreated = () => {
+    fetchEntries();
+    setShowModal(false);
+  };
+
+  const handleEditEntry = (entry) => {
+    setEditingEntry(entry); // Trigger edit modal directly
+    setSelectedEntry(null); // Close detail view if it's open
   };
 
   return (
@@ -126,8 +225,10 @@ const DiaryList = () => {
         )}
       </div>
 
-      {/* Modal to show all entries' content */}
-      {showAllEntriesModal && (
+      
+
+{/* Modal to show all entries' content */}
+{showAllEntriesModal && (
         <div className="modalOverlay">
           <div className="modalContent">
             <h2>All Diary Entries</h2>
@@ -141,7 +242,9 @@ const DiaryList = () => {
                 <p><strong>Weather:</strong> 
                   {entry.weather ? (
                     <>
-                      {entry.weather.condition}, {entry.weather.temperature} in {entry.weather.location}
+                      <span>{entry.weather.condition}</span>, 
+                      <span>{entry.weather.temperature}</span> 
+                      in <span>{entry.weather.location}</span>
                     </>
                   ) : (
                     "Weather data unavailable."
@@ -155,6 +258,61 @@ const DiaryList = () => {
         </div>
       )}
 
+{editingEntry && (
+        <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Entry</h2>
+            <form>
+              <label>
+                Title:
+                <input
+                  type="text"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                Content:
+                <textarea
+                  name="content"
+                  value={editFormData.content}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <label>
+                Reflection:
+                <textarea
+                  name="reflection"
+                  value={editFormData.reflection}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <label>
+                Tags (comma-separated):
+                <input
+                  type="text"
+                  name="tags"
+                  value={editFormData.tags}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <label>
+                Location:
+                <input
+                  type="text"
+                  name="location"
+                  value={editFormData.location}
+                  onChange={handleEditChange}
+                />
+              </label>
+            </form>
+            <button onClick={() => setEditingEntry(null)}>Cancel</button>
+            <button onClick={handleEditSubmit}>Save Changes</button>
+          </div>
+        </div>
+      )}
+
       {showModal && (
         <div className="modalOverlay">
           <div className="modalContent">
@@ -162,30 +320,33 @@ const DiaryList = () => {
           </div>
         </div>
       )}
+
       {selectedEntry && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <h2>{selectedEntry.title}</h2>
-            <p><strong>Content:</strong> {selectedEntry.content}</p>
-            <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
-            <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
-            <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
-            <p><strong>Weather:</strong>{" "} 
-              {selectedEntry.weather ? (
-                <>
-                  {selectedEntry.weather.condition}, {selectedEntry.weather.temperature} in {selectedEntry.weather.location}
-                </>
-              ) : (
-                "Weather data unavailable."
-              )}
-            </p>
-            {/* NEW Delete Button */}
-            <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
-            <button onClick={closeDetailsModal}>Close</button>
-          </div>
-        </div>
+          <h2>{selectedEntry.title}</h2>
+      <p><strong>Content:</strong> {selectedEntry.content}</p>
+      <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
+      <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
+      <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
+      <p><strong>Weather:</strong> 
+  {selectedEntry.weather ? (
+    <>
+      <span>{selectedEntry.weather.condition}</span>, 
+      <span>{selectedEntry.weather.temperature}</span> 
+      in <span>{selectedEntry.weather.location}</span>
+    </>
+  ) : (
+    "Weather data unavailable."
+  )}</p>
+      <button onClick={closeDetailsModal}>Close</button>
+      <button onClick={() => setEditingEntry(selectedEntry)}>Edit</button> {/* Edit Button */}
+      <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
+      </div>
+    </div>
       )}
     </div>
+
   );
 };
 
