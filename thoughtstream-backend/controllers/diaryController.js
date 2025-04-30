@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 import DiaryEntry from "../models/DiaryEntry.js";
 import { fetchWeather } from "./weatherController.js";
-import { validateDiaryEntry } from "../middleware/validation.js";
-
-
 
 /**
  * @route   GET /api/diary
@@ -63,16 +60,14 @@ export const createEntry = async (req, res) => {
   try {
     const { title, content, reflection, tags, location } = req.body;
 
-    // Validate input
-    const { isValid, errors } = validateDiaryEntry(req.body);
-    if (!isValid) {
-      return res.status(400).json({ message: "Validation failed", errors });
+    if (!title || !content || !location) {
+      return res.status(400).json({ message: "Title, content, and location are required." });
     }
 
     const weatherData = location ? await fetchWeather(location) : null;
 
     const newEntry = new DiaryEntry({
-      user: req.user.userId,
+      user: req.user.userId,  // Matches token and middleware
       title,
       content,
       reflection,
@@ -106,12 +101,16 @@ export const updateEntry = async (req, res) => {
       return res.status(404).json({ message: "Diary entry not found" });
     }
 
-    // 🔒 Ownership check
+    // Ownership check
     if (entry.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    console.log("Existing entry:", entry);
+
     const { title, content, reflection, tags, location } = req.body;
+
+    console.log("Data to be updated:", { title, content, reflection, tags, location });
 
     entry.title = title ?? entry.title;
     entry.content = content ?? entry.content;
@@ -120,8 +119,11 @@ export const updateEntry = async (req, res) => {
     entry.location = location ?? entry.location;
 
     const updated = await entry.save();
+    console.log("Updated entry:", updated);
+
     res.status(200).json(updated);
   } catch (error) {
+    console.error("Error in updating entry:", error);
     res.status(400).json({ message: error.message });
   }
 };
