@@ -9,6 +9,7 @@ const DiaryList = () => {
   const [entries, setEntries] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const [showAllEntriesModal, setShowAllEntriesModal] = useState(false);
 
   useEffect(() => {
     fetchEntries();
@@ -41,6 +42,15 @@ const DiaryList = () => {
   const closeDetailsModal = () => {
     setSelectedEntry(null);
   };
+
+  const handleShowAllEntries = () => {
+    setShowAllEntriesModal(true);
+  };
+
+  const closeAllEntriesModal = () => {
+    setShowAllEntriesModal(false);
+  };
+
 
   const handleChange = (e) => {
     setFormData({ 
@@ -77,6 +87,10 @@ const DiaryList = () => {
         + New Diary Entry
       </button>
 
+      <button onClick={handleShowAllEntries} className="showAllEntriesButton">
+        Show All Entries
+      </button>
+
       <div className="entryListContainer">
         {entries.length > 0 ? (
           entries.map(entry => (
@@ -93,6 +107,38 @@ const DiaryList = () => {
         )}
       </div>
 
+{/* Modal to show all entries' content */}
+{showAllEntriesModal && (
+        <div className="modalOverlay">
+          <div className="modalContent">
+            <h2>All Diary Entries</h2>
+            {entries.map(entry => (
+              <div key={entry._id}>
+                <h3>{entry.title}</h3>
+                <p><strong>Content:</strong> {entry.content}</p>
+                <p><strong>Reflection:</strong> {entry.reflection || "No reflection added."}</p>
+                <p><strong>Tags:</strong> {entry.tags?.join(", ") || "No tags."}</p>
+                <p><strong>Location:</strong> {entry.location || "No location provided."}</p>
+                <p><strong>Weather:</strong> 
+                  {entry.weather ? (
+                    <>
+                      <span>{entry.weather.condition}</span>, 
+                      <span>{entry.weather.temperature}</span> 
+                      in <span>{entry.weather.location}</span>
+                    </>
+                  ) : (
+                    "Weather data unavailable."
+                  )}
+                </p>
+                <hr />
+              </div>
+            ))}
+            <button onClick={closeAllEntriesModal}>Close</button>
+          </div>
+        </div>
+      )}
+
+
       {showModal && (
         <div className="modalOverlay">
           <div className="modalContent">
@@ -103,9 +149,22 @@ const DiaryList = () => {
       {selectedEntry && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <h2>{selectedEntry.title}</h2>
-            <p>{selectedEntry.content}</p>
-            <button onClick={closeDetailsModal}>Close</button>
+          <h2>{selectedEntry.title}</h2>
+      <p><strong>Content:</strong> {selectedEntry.content}</p>
+      <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
+      <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
+      <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
+      <p><strong>Weather:</strong> 
+  {selectedEntry.weather ? (
+    <>
+      <span>{selectedEntry.weather.condition}</span>, 
+      <span>{selectedEntry.weather.temperature}</span> 
+      in <span>{selectedEntry.weather.location}</span>
+    </>
+  ) : (
+    "Weather data unavailable."
+  )}</p>
+      <button onClick={closeDetailsModal}>Close</button>
           </div>
         </div>
       )}
