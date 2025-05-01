@@ -195,8 +195,8 @@ const DiaryList = () => {
   };
 
   const handleEditEntry = (entry) => {
-    setEditingEntry(entry); // Trigger edit modal directly
-    setSelectedEntry(null); // Close detail view if it's open
+    setEditingEntry(entry); 
+    setSelectedEntry(null); 
   };
 
   return (
@@ -262,44 +262,49 @@ const DiaryList = () => {
         <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
           <div className="modalContent" onClick={(e) => e.stopPropagation()}>
             <h2>Edit Entry</h2>
-            <form>
+            <form className="Editor">
+              <p>Title</p>
               <label>
-                Title:
                 <input
+                  className="titleEdit"
                   type="text"
                   name="title"
                   value={editFormData.title}
                   onChange={handleEditChange}
                 />
               </label>
+              <p>Content</p>
               <label>
-                Content:
                 <textarea
+                  className="contentEdit"
                   name="content"
                   value={editFormData.content}
                   onChange={handleEditChange}
                 ></textarea>
               </label>
+              <p>Reflection</p>
               <label>
-                Reflection:
                 <textarea
+                  className="reflectionEdit"
                   name="reflection"
                   value={editFormData.reflection}
                   onChange={handleEditChange}
                 ></textarea>
               </label>
+              <p>Tags (comma-seperated)</p>
               <label>
-                Tags (comma-separated):
                 <input
+                  className="tagEdit"
                   type="text"
                   name="tags"
                   value={editFormData.tags}
                   onChange={handleEditChange}
                 />
               </label>
+              <p>Location</p>
               <label>
-                Location:
                 <input
+                  className="locationEdit"
                   type="text"
                   name="location"
                   value={editFormData.location}
@@ -307,8 +312,10 @@ const DiaryList = () => {
                 />
               </label>
             </form>
-            <button onClick={() => setEditingEntry(null)}>Cancel</button>
-            <button onClick={handleEditSubmit}>Save Changes</button>
+            <div className="buttons">
+              <button onClick={() => setEditingEntry(null)}>Cancel</button>
+              <button onClick={handleEditSubmit}>Save Changes</button>
+            </div> 
           </div>
         </div>
       )}
@@ -322,32 +329,19 @@ const DiaryList = () => {
       )}
 
       {selectedEntry && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-          <h2>{selectedEntry.title}</h2>
-      <p><strong>Content:</strong> {selectedEntry.content}</p>
-      <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
-      <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p>
-      <p><strong>Location:</strong> {selectedEntry.location || "No location provided."}</p>
-      <p><strong>Weather:</strong> 
-  {selectedEntry.weather ? (
-    <>
-      <span>{selectedEntry.weather.condition}</span>, 
-      <span>{selectedEntry.weather.temperature}</span> 
-      in <span>{selectedEntry.weather.location}</span>
-    </>
-  ) : (
-    "Weather data unavailable."
-  )}</p>
-      <button onClick={closeDetailsModal}>Close</button>
-      <button onClick={() => setEditingEntry(selectedEntry)}>Edit</button> {/* Edit Button */}
-      <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
-      </div>
-    </div>
-      )}
-    </div>
+        <div className = "section2">
+         <DiaryEntryCard
+         entry={selectedEntry}
+         onClose={closeDetailsModal}
+         onEdit={handleEditEntry}
+         onDelete={handleDelete}
+       />
+       </div> 
+      )};
 
-  );
+      </div>
+  );  
+
 };
 
 export default DiaryList;
