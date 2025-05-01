@@ -5,41 +5,44 @@ import "../styles/index.css";
 import api from "../services/api";
 import DiaryEntryCard from './DiaryEntryCard'
 
-//managing and displaying diary entries
 const DiaryList = () => {
   const [entries, setEntries] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [showAllEntriesModal, setShowAllEntriesModal] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
-  const [editFormData, setEditFormData] = useState({ title: "", content: "", reflection: "", tags: "", location: "", weather: {location: "" }, 
+  const [editFormData, setEditFormData] = useState({
+    title: "",
+    content: "",
+    reflection: "",
+    tags: "",
+    location: "",
   });
 
-  //fetch entries when the component loads 
-  useEffect(() => { fetchEntries(); }, []);
+  useEffect(() => {
+    fetchEntries();
+  }, []);
 
-  // fetch diary entries from backend
   const fetchEntries = async () => {
     try{
       const token = localStorage.getItem('jwt');
       console.log("Token fetched:", token); 
       
-      //fetch entries from API
       const res = await api.get('/diary', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log("Fetched Entries:", res.data);
-      
-      if(res.data.length === 0){ console.log("no enteries found") }
-      
-      //update entries state
+      if(res.data.length === 0){
+        console.log("no enteries found")
+      }
       setEntries(res.data);
     } catch (error) {
       console.error("Failed to fetch diary entries", error.response?.data || error.message);
     }
   };
 
-  // update edit form data when an entry is selected for editing
   useEffect(() => {
     if (editingEntry) {
       setEditFormData({
@@ -47,73 +50,37 @@ const DiaryList = () => {
         content: editingEntry.content,
         reflection: editingEntry.reflection,
         tags: editingEntry.tags?.join(", ") || "",
-        weather: { location: editingEntry.weather?.location || "" },
+        location: editingEntry.location || ""
       });
     }
   }, [editingEntry]);
 
-  // handle changes in the edit form
-  const handleEditChange = async (e) => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
-  
-    if (name === "location") {
-      // Update the location in the form data
-      setEditFormData((prevData) => ({
-        ...prevData,
-        weather: { ...prevData.weather, location: value },
-      }));
-      const weatherData = await fetchWeatherData(value);
-      if (weatherData) {
-        setEditFormData((prevData) => ({
-          ...prevData,
-          weather: {
-            ...prevData.weather,
-            condition: weatherData.condition,
-            temperature: weatherData.temperature,
-          },
-        }));
-      }
-    } else {
-      // update other form fields
-      setEditFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setEditFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
   
-  // handle click on an entry to display details
-  const handleEntryClick = async (entry) => {
-    console.log("Clicked entry:", entry);
+  
+  const handleEntryClick = (entry) => {
+    setSelectedEntry(entry);
+  }
 
-    // fetch weather data if not already available
-    const weatherData = entry.weather?.location
-      ? entry.weather
-      : await fetchWeatherData(entry.weather.location);
-    
-    // update selected entry state
-    setSelectedEntry({
-      ...entry,
-      weather: weatherData || entry.weather,  // Update weather if fetched or fallback
-    });
-  };
-  
-  // close details modal
   const closeDetailsModal = () => {
     setSelectedEntry(null);
   };
 
-  // show all entries modal
   const handleShowAllEntries = () => {
     setShowAllEntriesModal(true);
   };
 
-  // handle edit submission
   const closeAllEntriesModal = () => {
     setShowAllEntriesModal(false);
   };
 
-  // handle change
+
   const handleChange = (e) => {
     setFormData({ 
       ...formData, 
@@ -121,9 +88,9 @@ const DiaryList = () => {
     });
   };
 
-  /*handle edit submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
       const token = localStorage.getItem('token');
       const res = await axios.get('/api/diary', {
@@ -136,9 +103,8 @@ const DiaryList = () => {
     } catch (error) {
       console.error("Failed to fetch diary entries", error);
     }
-  };*/
+  };
 
-  //handle delete request for an entry
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this diary entry?");
     if (!confirmDelete) return;
@@ -158,46 +124,32 @@ const DiaryList = () => {
     }
   };
 
-  //fetch weahter based on data ( this was supposed to be for updating weather if location changes)
-  const fetchWeatherData = async (location) => {
-    try {
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY; // Use your API key
-      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
-  
-      if (response.data) {
-        return {
-          condition: response.data.weather[0]?.description || "No condition data",
-          temperature: `${response.data.main?.temp} °C` || "No temperature data",
-          location: response.data.name || location, // Fallback to input location
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error("Failed to fetch weather data:", error);
-      return null; // Return null if there's an error
-    }
-  };
-  
-  // handle edit submission
   const handleEditSubmit = async () => {
     try {
       const token = localStorage.getItem("jwt");
+  
       if (!editingEntry) {
         throw new Error("No entry selected for editing");
       }
   
+      // Log the current editingEntry to make sure it's correct
+      console.log("Currently editing entry:", editingEntry);
+  
+      // Prepare the updated entry data
       const updatedEntry = {
         ...editFormData,
-        tags: editFormData.tags ? editFormData.tags.split(",").map((tag) => tag.trim()) : [],
+        tags: editFormData.tags ? editFormData.tags.split(",").map((tag) => tag.trim()) : [], // Make sure tags is an array
       };
   
-      // Fetch new weather data for the updated location
-      const weatherData = await fetchWeatherData(updatedEntry.weather.location);
-      if (weatherData) {
-        updatedEntry.weather = weatherData;
+      // Log the data you're sending to the server
+      console.log("Updated entry data to be sent:", updatedEntry);
+  
+      // Check if any required fields are missing or invalid
+      if (!updatedEntry.title || !updatedEntry.content) {
+        throw new Error("Title and Content are required fields.");
       }
   
-      // Send updated entry to the backend
+      // Send the PUT request to the backend
       const response = await api.put(`/diary/${editingEntry._id}`, updatedEntry, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -205,51 +157,58 @@ const DiaryList = () => {
         },
       });
   
-      // Update the entries state with the response data
-      const updatedEntries = entries.map((entry) =>
-        entry._id === editingEntry._id ? response.data : entry
+      // Log the response data from the API
+      console.log("Response from server after update:", response.data);
+  
+      // Update the local state with the response from the server
+      setEntries((prevEntries) =>
+        prevEntries.map((entry) =>
+          entry._id === editingEntry._id ? response.data : entry
+        )
       );
-      setEntries(updatedEntries);
   
-      // Update the selectedEntry state directly after the edit
-      if (selectedEntry?._id === editingEntry._id) {
-        setSelectedEntry({
-          ...selectedEntry,
-          weather: response.data.weather, // Ensure weather is updated
-        });
-        console.log("Updated selectedEntry:", selectedEntry);
-      }
-  
-      setEditingEntry(null); // Close edit modal
+      // Close the edit modal
+      setEditingEntry(null);
+      console.log("Entry updated successfully:", response.data);
     } catch (error) {
+      // Log the detailed error information
       console.error("Failed to update the entry:", error);
-      alert(`Failed to update the entry: ${error.message}`);
+  
+      // Check if error response contains additional information
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unknown error occurred";
+  
+      // Display a more descriptive error message
+      alert(`Failed to update the entry: ${errorMessage}`);
     }
   };
   
+  
+ 
+
   const handleEntryCreated = () => {
     fetchEntries();
     setShowModal(false);
   };
 
   const handleEditEntry = (entry) => {
-    setEditingEntry(entry); // Trigger edit modal directly
-    setSelectedEntry(null); // Close detail view if it's open
+    setEditingEntry(entry); 
+    setSelectedEntry(null); 
   };
 
   return (
     <div className="diaryEntryList">
-      {/* button to create a new diary entry */}
       <button onClick={() => setShowModal(true)} className="newEntryButton">
         + New Diary Entry
       </button>
 
-      {/* button to show all entries */}
       <button onClick={handleShowAllEntries} className="showAllEntriesButton">
         Show All Entries
       </button>
 
-      {/* dislay entries as cards*/ }
       <div className="entryListContainer">
         {entries.length > 0 ? (
           entries.map(entry => (
@@ -266,11 +225,12 @@ const DiaryList = () => {
         )}
       </div>
 
-      {/* Modal to show all entries' content */}
-      {showAllEntriesModal && (
+      
+
+{/* Modal to show all entries' content */}
+{showAllEntriesModal && (
         <div className="modalOverlay">
           <div className="modalContent">
-            <button onClick={closeAllEntriesModal}>Close</button>
             <h2>All Diary Entries</h2>
             {entries.map(entry => (
               <div key={entry._id}>
@@ -290,77 +250,75 @@ const DiaryList = () => {
                     "Weather data unavailable."
                   )}
                 </p>
-                <hr/>
+                <hr />
               </div>
             ))}
+            <button onClick={closeAllEntriesModal}>Close</button>
           </div>
         </div>
       )}
 
 {editingEntry && (
-  <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
-    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-      <h2>Edit Entry</h2>
-      <form>
-        <div>
-          <label>
-            Title:
-            <input
-              type="text"
-              name="title"
-              value={editFormData.title}
-              onChange={handleEditChange}
-            />
-          </label>
+        <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
+          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+            <h2>Edit Entry</h2>
+            <form className="Editor">
+              <p>Title</p>
+              <label>
+                <input
+                  className="titleEdit"
+                  type="text"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <p>Content</p>
+              <label>
+                <textarea
+                  className="contentEdit"
+                  name="content"
+                  value={editFormData.content}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <p>Reflection</p>
+              <label>
+                <textarea
+                  className="reflectionEdit"
+                  name="reflection"
+                  value={editFormData.reflection}
+                  onChange={handleEditChange}
+                ></textarea>
+              </label>
+              <p>Tags (comma-seperated)</p>
+              <label>
+                <input
+                  className="tagEdit"
+                  type="text"
+                  name="tags"
+                  value={editFormData.tags}
+                  onChange={handleEditChange}
+                />
+              </label>
+              <p>Location</p>
+              <label>
+                <input
+                  className="locationEdit"
+                  type="text"
+                  name="location"
+                  value={editFormData.location}
+                  onChange={handleEditChange}
+                />
+              </label>
+            </form>
+            <div className="buttons">
+              <button onClick={() => setEditingEntry(null)}>Cancel</button>
+              <button onClick={handleEditSubmit}>Save Changes</button>
+            </div> 
+          </div>
         </div>
-        <div>
-          <label>
-            Content:
-            <textarea
-              name="content"
-              value={editFormData.content}
-              onChange={handleEditChange}
-            ></textarea>
-          </label>
-        </div>
-        <div>
-          <label>
-            Reflection:
-            <textarea
-              name="reflection"
-              value={editFormData.reflection}
-              onChange={handleEditChange}
-            ></textarea>
-          </label>
-        </div>
-        <div>
-          <label>
-            Tags (comma-separated):
-            <input
-              type="text"
-              name="tags"
-              value={editFormData.tags}
-              onChange={handleEditChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={editFormData.weather.location}
-              onChange={handleEditChange}
-            />
-          </label>
-        </div>
-      </form>
-      <button onClick={() => setEditingEntry(null)}>Cancel</button>
-      <button onClick={handleEditSubmit}>Save Changes</button>
-    </div>
-  </div>
-)}
+      )}
 
       {showModal && (
         <div className="modalOverlay">
@@ -371,31 +329,19 @@ const DiaryList = () => {
       )}
 
       {selectedEntry && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>{selectedEntry.title}</h2>
-              <p><strong>Content:</strong> {selectedEntry.content}</p>
-              <p><strong>Reflection:</strong> {selectedEntry.reflection || "No reflection added."}</p>
-              <p><strong>Tags:</strong> {selectedEntry.tags?.join(", ") || "No tags."}</p> 
-              <p><strong>Location:</strong> {selectedEntry.weather?.location || "No location provided."}</p>
-              <p><strong>Weather:</strong> 
-              {selectedEntry.weather ? (
-              <>
-                <span>{selectedEntry.weather.condition}</span>, 
-                <span>{selectedEntry.weather.temperature}</span> 
-                in <span>{selectedEntry.weather.location}</span>
-              </>
-              ) : (
-              "Weather data unavailable."
-              )}</p>
-                <button onClick={closeDetailsModal}>Close</button>
-                <button onClick={() => handleEditEntry(selectedEntry)}>Edit</button>
-                <button onClick={() => handleDelete(selectedEntry._id)}>Delete</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+        <div className = "section2">
+         <DiaryEntryCard
+         entry={selectedEntry}
+         onClose={closeDetailsModal}
+         onEdit={handleEditEntry}
+         onDelete={handleDelete}
+       />
+       </div> 
+      )};
+
+      </div>
+  );  
+
 };
 
 export default DiaryList;

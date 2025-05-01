@@ -17,9 +17,9 @@
 /*HEADER DESIGN*/
 
 /*"Welcome, user" font*/
-.headerArea > h2 {
+.headerArea .leftContent > h2 {
   font-family:'Pacifico', cursive;
-  margin-left: 3rem; 
+  margin-left: 1rem; 
   color: rgb(254, 250, 253); 
   font-size: 2.5rem; 
   font-style: bold;
@@ -58,6 +58,13 @@
   height: 5rem; 
   align-items: center; 
 }
+
+.leftContent {
+  display: flex;
+  align-items: center;
+}
+
+
 
 
 .flower-animation-container {
@@ -118,6 +125,10 @@
 
 /* Section 3 */
 .innerDash > .section3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   margin-right: 1rem;
   grid-area: section3;
   background: rgba(255, 255, 255, 0.6);
@@ -126,7 +137,8 @@
 }
 
 /* Section 4 */
-.innerDash > .section4 {
+.dashboard > .innerDash > .section4 {
+  margin-top: 0;
   margin-left: 1rem;
   grid-area: section4;
   background: rgba(255, 255, 255, 0.6);
@@ -138,8 +150,9 @@
   padding: 1rem;
 }
 
+/* Side ScrollBar height*/
 .entryListContainer {
-  max-height: 66vh;   
+  max-height: 58vh;   
   overflow-y: auto;     
   margin-top: 20px;
   border: 1px solid #ccc;
@@ -162,8 +175,8 @@
 .newEntryButton {
   font-family: 'Comic Neue', cursive;
   font-size: 1rem;
-  margin-left: 1.9rem;
-  padding: 10px 20px;
+  margin-left: 2.5rem;
+  padding: 0.5rem;
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -273,43 +286,23 @@ color: white;
 }
 
 .thoughtStream > h3{
-margin-top: 0rem;
-display: flex; 
-justify-content: center;
-font-family: 'Pacifico', cursive;
-font-size: 2.6rem; 
-color: white; 
+  margin-top: 0rem;
+  display: flex; 
+  justify-content: center;
+  font-family: 'Pacifico', cursive;
+  font-size: 2.6rem; 
+  color: white; 
 }
 
 .sun{
-font-size: 3.5rem;
-color: rgba(237, 246, 117, 0.7);
+  font-size: 3.5rem;
+  color: rgba(237, 246, 117, 0.7);
 }
 
-.modalOverlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.5); 
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 1000;           
-}
-
-/* Centered white box */
-.modalContent {
-  background: rgb(183, 208, 217);
-  border-radius: 8px;
-  padding: 24px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  position: relative;
-  height: 80vh; /* Set a fixed height */
-  overflow-y: auto; /* Show scrollbar when content overflows */
+.sun1{
+  margin-left: 1rem;
+  font-size: 3.5rem;
+  color: rgba(237, 246, 117, 0.7);
 }
 
 /* Custom scrollbar style (optional) */
@@ -318,29 +311,36 @@ z-index: 1000;
 }
 
 .modalContent::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2); /* Dark thumb */
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
 .modalContent::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1); /* Light track */
+  background: rgba(0, 0, 0, 0.1); 
 }
 
 .newEntryForm{
-display:flex;
-align-items: center;
-justify-content: center;
-flex-direction: column; 
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
 }
 
+/*Show All the Entries Button*/
 .showAllEntriesButton {
-  margin: 20px 0;
-  padding: 10px;
+  margin-left: 2.5rem;
+  font-size: 1rem;
+  margin-top: .3rem;
+  padding: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-family: 'Comic Neue', cursive;
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: .6rem;
   cursor: pointer;
+  margin-bottom: 0;
 }
 
 .showAllEntriesButton:hover {
@@ -348,9 +348,9 @@ flex-direction: column;
 }
 
 .diaryEntryCard:hover {
-  background-color: #e0f7fa; /* Change to a light blue or any color you prefer */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow for emphasis */
-  transform: scale(1.02); /* Slightly enlarge the entry */
+  background-color: #e0f7fa; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  transform: scale(1.02); 
 }
 
 .entryListContainer {
@@ -359,11 +359,13 @@ flex-direction: column;
 
 button {
   padding: 10px 20px;
-  background-color: #2196F3;
+  background-color:#6388a6;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: .7rem;
   cursor: pointer;
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.3rem; 
 }
 
 button:hover {
@@ -453,4 +455,190 @@ width: 10.3rem;
 .WeatherWidget > .condition:hover{
 background-color: rgb(151, 192, 206); 
 color: white; 
+}
+
+.lofiBeats {
+  display: flex; 
+  width: 40rem;
+  margin-top: 3rem;
+  margin-top: 3rem; 
+  margin-left: 4.5rem;
+}
+
+.Hello{
+  display: flex;
+  font-size: 2rem;
+  font-family: 'Pacifico', cursive;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+  background-color: white;
+  color: #4CAF50;
+}
+
+.modalOverlay .modalContent .content{
+  margin-top: 0;
+  display: inline-block;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.actualContent{
+  font-size: 1.1rem;
+}
+
+.modalContent .modalContent{
+  display: flex;
+  justify-content: center;
+}
+
+.modalOverlay .modalContent > h2 {
+  align-self: center;
+  font-size: 3.3rem; 
+  font-family: 'Comic Neue', cursive;
+  margin: 0; 
+  margin-bottom: .5rem; 
+  color: #6388a6; 
+}
+
+.modalOverlay .modalContent .reflection {
+  margin-top: 0;
+  display: inline-block;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.actualReflection{
+  font-size: 1.1rem;
+}
+
+.modalOverlay .modalContent .tags{
+  margin-top: 0;
+  display: inline-block;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.actualTags{
+  font-size: 1.1rem;
+}
+
+.modalOverlay .modalContent .location{
+  margin-top: 0;
+  display: inline-block;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.actualLocation{
+  font-size: 1.1rem;
+}
+
+.modalOverlay .modalContent .weather{
+  margin-top: 0;
+  display: inline-block;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: underline;
+}
+
+.actualWeather{
+  font-size: 1.1rem;
+}
+
+.modalOverlay .modalContent .box1{
+  background-color: #83b0d4;
+  border-radius: .7rem;
+  padding: .8rem;
+}
+
+.modalOverlay .modalContent .box2{
+  margin-top: .3rem;
+  background-color: #83b0d4;
+  border-radius: .7rem;
+  padding: .8rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 1000;           
+  }
+  
+  /*Diary List*/
+  .modalContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: rgb(183, 208, 217);
+    border-radius: 1rem;
+    padding: 24px;
+    max-width: 30rem;
+    width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
+    height: 64vh; 
+    overflow-y: auto; 
+  }
+
+  .buttons{
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    gap: .3rem; 
+    font-family: 'Comic Neue', cursive; 
+  }
+  
+  .Editor {
+    display: flex;
+    justify-content: center;
+    flex-direction: column; 
+    align-items: flex-start;
+  }
+
+  .Editor > p {
+    margin: 0; 
+    margin-top: 0.2rem;
+    font-size: 1rem; 
+    color: #4c6c86; 
+    font-weight:300;
+  }
+
+.titleEdit, .tagEdit, .locationEdit, .contentEdit, .reflectionEdit{
+    width: 29.7rem;
+    border: none; 
+    border-radius: .4rem;
+}
+
+.titleEdit{
+  height: 1.5rem;
+}
+
+.contentEdit{
+  height: 8rem; 
+}
+
+.reflectionEdit{
+  height: 4rem; 
+}
+
+.tagEdit{
+  height: 2rem;
+}
+
+.locationEdit{
+  height: 1.5rem;
 }

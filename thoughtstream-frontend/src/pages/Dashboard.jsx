@@ -3,9 +3,9 @@ import { AuthContext } from "../context/AuthContext";
 import Header from "../components/header";
 import WeatherWidget from "../components/WeatherWidget.jsx";
 import FlowerAnimation from "../components/FlowersAnimation.jsx"; 
-import DiaryEntryCard from "../components/DiaryEntryCard";
 import DiaryList from "../components/DiaryList"; 
 import api from "../services/api";
+import LofiBeats from "../components/LofiBeats.jsx"; 
 
 
 const Dashboard = () => {
@@ -21,7 +21,7 @@ const Dashboard = () => {
             <WeatherWidget />
           </section>
           <section className="section2">
-            <DiaryEntryCard />
+            <LofiBeats /> 
           </section>
           <section className="section3">
             <DiaryList /> 
