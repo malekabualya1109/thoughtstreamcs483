@@ -31,9 +31,7 @@ const DiaryEntryCard = ({ entry, onClose, onEdit, onDelete }) => {
           <div className="actualWeather">
         {entry.weather ? (
             <>
-              <span>{entry.weather.condition}</span>, 
-              <span>{entry.weather.temperature}</span> 
-              in <span>{entry.weather.location}</span>
+              <span>{entry.weather.condition}</span>, <span>{entry.weather.temperature}</span> in <span>{entry.weather.location}</span>
             </>
           ) : (
             "Weather data unavailable."
