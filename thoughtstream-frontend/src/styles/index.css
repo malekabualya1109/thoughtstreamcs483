@@ -298,6 +298,7 @@ justify-content: center;
 align-items: center;
 z-index: 1000;           
 }
+
 /* Centered white box */
 .modalContent {
   background: rgb(183, 208, 217);
