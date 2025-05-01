@@ -229,12 +229,17 @@ const DiaryList = () => {
 
 {/* Modal to show all entries' content */}
 {showAllEntriesModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h2>All Diary Entries</h2>
+  <>
+        <div className="modalOverlay1">
+          <div className="modalContent1">
+          <h2 style={{ marginBottom: "1rem", textAlign: "center" }}>All Diary Entries</h2>
+            <button className="CloseyButton" onClick={closeAllEntriesModal}>Close</button>
+            <div className="modalScrollWrapper">
             {entries.map(entry => (
+              
               <div key={entry._id}>
-                <h3>{entry.title}</h3>
+
+                <div className = "allTitles">{entry.title}</div>
                 <p><strong>Content:</strong> {entry.content}</p>
                 <p><strong>Reflection:</strong> {entry.reflection || "No reflection added."}</p>
                 <p><strong>Tags:</strong> {entry.tags?.join(", ") || "No tags."}</p>
@@ -255,10 +260,14 @@ const DiaryList = () => {
                 </p>
                 <hr />
               </div>
+              
             ))}
-            <button onClick={closeAllEntriesModal}>Close</button>
+            </div> 
+          
+            <button className="CloseyButton" onClick={closeAllEntriesModal}>Close</button>
+            </div>
           </div>
-        </div>
+          </>
       )}
 
 {editingEntry && (
