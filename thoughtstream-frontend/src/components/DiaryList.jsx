@@ -242,10 +242,13 @@ const DiaryList = () => {
                 <p><strong>Weather:</strong> 
                   {entry.weather ? (
                     <>
-                      <span>{entry.weather.condition}</span>, 
-                      <span>{entry.weather.temperature}</span> 
-                      in <span>{entry.weather.location}</span>
-                    </>
+                    {" "}
+                    <span>{entry.weather.condition}</span>
+                    {", "}
+                    <span>{entry.weather.temperature}</span> 
+                    {" in "}
+                    <span>{entry.weather.location}</span>
+                  </>
                   ) : (
                     "Weather data unavailable."
                   )}
