@@ -297,60 +297,70 @@ const DiaryList = () => {
         </div>
       )}
 
-      {editingEntry && (
-        <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
-          <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-            <h2>Edit Entry</h2>
-            <form>
-              <label>
-                Title:
-                <input
-                  type="text"
-                  name="title"
-                  value={editFormData.title}
-                  onChange={handleEditChange}
-                />
-              </label>
-              <label>
-                Content:
-                <textarea
-                  name="content"
-                  value={editFormData.content}
-                  onChange={handleEditChange}
-                ></textarea>
-              </label>
-              <label>
-                Reflection:
-                <textarea
-                  name="reflection"
-                  value={editFormData.reflection}
-                  onChange={handleEditChange}
-                ></textarea>
-              </label>
-              <label>
-                Tags (comma-separated):
-                <input
-                  type="text"
-                  name="tags"
-                  value={editFormData.tags}
-                  onChange={handleEditChange}
-                />
-              </label>
-              <label>
-                Location:
-                <input
-                  type="text"
-                  name="location"
-                  value={editFormData.weather.location}
-                  onChange={handleEditChange}
-                />
-              </label>
-            </form>
-            <button onClick={() => setEditingEntry(null)}>Cancel</button>
-            <button onClick={handleEditSubmit}>Save Changes</button>
-          </div>
+{editingEntry && (
+  <div className="modalOverlay" onClick={() => setEditingEntry(null)}>
+    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+      <h2>Edit Entry</h2>
+      <form>
+        <div>
+          <label>
+            Title:
+            <input
+              type="text"
+              name="title"
+              value={editFormData.title}
+              onChange={handleEditChange}
+            />
+          </label>
         </div>
-      )}
+        <div>
+          <label>
+            Content:
+            <textarea
+              name="content"
+              value={editFormData.content}
+              onChange={handleEditChange}
+            ></textarea>
+          </label>
+        </div>
+        <div>
+          <label>
+            Reflection:
+            <textarea
+              name="reflection"
+              value={editFormData.reflection}
+              onChange={handleEditChange}
+            ></textarea>
+          </label>
+        </div>
+        <div>
+          <label>
+            Tags (comma-separated):
+            <input
+              type="text"
+              name="tags"
+              value={editFormData.tags}
+              onChange={handleEditChange}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Location:
+            <input
+              type="text"
+              name="location"
+              value={editFormData.weather.location}
+              onChange={handleEditChange}
+            />
+          </label>
+        </div>
+      </form>
+      <button onClick={() => setEditingEntry(null)}>Cancel</button>
+      <button onClick={handleEditSubmit}>Save Changes</button>
+    </div>
+  </div>
+)}
 
       {showModal && (
         <div className="modalOverlay">
